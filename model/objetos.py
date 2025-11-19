@@ -17,7 +17,7 @@ class InsumosModel :
         cursor = self.db.obtener_cursor()
         
         try:
-            consulta_validacion = "select * from Insumos where nombre = :1"
+            consulta_validacion = "select * from Insumos where id = :1"
             cursor.execute(consulta_validacion,(nombre,))
             
             if len(cursor.fetchall()) >0:
@@ -40,7 +40,7 @@ class InsumosModel :
             if cursor:
                 cursor.close()
     
-    def editar_insumos(self,nombre :str, *datos: tuple) -> bool:
+    def editar_insumos(self,id: int, nombre :str, *datos: tuple) -> bool:
         """
             Edita el item indicado solo si existe en la BD.\n
             Si es que no existe, lanzará el mensaje correspondiente.\n

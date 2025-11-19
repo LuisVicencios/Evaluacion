@@ -23,11 +23,11 @@ class UsuarioModel :
         cursor = self.db.obtener_cursor()
         
         try:
-            consulta_validacion = "select * from usuarios where nombre usuario = :1"
-            cursor.execute(consulta_validacion,(nombre_usuario,))
+            consulta_validacion = "select * from usuarios where id = :1"
+            cursor.execute(consulta_validacion,(id,))
             
             if len(cursor.fetchall()) >0:
-                print(f"[ERROR]: Ya existe este nombre de usuario {nombre_usuario} ")
+                print(f"[ERROR]: Ya existe este usuario ID: {id} ")
                 
                 return False
             else:
@@ -46,14 +46,14 @@ class UsuarioModel :
             if cursor:
                 cursor.close()
     
-    def editar_usuarios(self,nombre_usuario :str, *datos: tuple) -> bool:
+    def editar_usuarios(self,id  :str, nombre_usuario: str, *datos: tuple) -> bool:
         """
             Edita el item indicado solo si existe en la BD.\n
             Si es que no existe, lanzará el mensaje correspondiente.\n
 
             params
             - nombre_usuario : nombre del item a editar
-            - datos : (nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo)
+            - datos : (id, nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo)
 
             returns Boolean
         """
@@ -61,12 +61,12 @@ class UsuarioModel :
         
         try:
             consulta_validacion = "select * from usuarios where nombre_usuario = :1"
-            cursor.execute(consulta_validacion, (nombre_usuario,))
+            cursor.execute(consulta_validacion, (id, nombre_usuario))
             
             if len(cursor.fetchall()) > 0:
                 if datos:
                     consulta_update = "update Usuarios set id = :1, nombre_usuario = :2, clave = :3, nombre = :4, apellido = :5, fecha_nacimiento = :6, telefono = :7, email = :8, tipo = :9"
-                    cursor.execute(consulta_update, (nombre_usuario, datos[0], datos[1], datos[2], datos[3], datos[4], datos[5], datos[6], datos [7], datos[8], nombre_usuario,))
+                    cursor.execute(consulta_update, (id, datos[0], datos[1], datos[2], datos[3], datos[4], datos[5], datos[6], datos [7], datos[8], id,))
                     self.db.connection.commit()
                     print(f"[INFO]: {nombre_usuario} editado correctamente")
                     
@@ -113,7 +113,7 @@ class UsuarioModel :
             if cursor:
                 cursor.close()
                 
-    def eliminar_usuario(self, nombre_usuario: str) -> bool:
+    def eliminar_usuario(self, id: int, nombre_usuario: str) -> bool:
         """
             Elimina el item indicado, validando que exista en la BD.
 
@@ -125,18 +125,18 @@ class UsuarioModel :
         cursor = self.db.obtener_cursor()
         
         try:
-            consulta_validacion = "select * from Usuarios Where nombre_usuario = :1"
-            cursor.execute(consulta_validacion, (nombre_usuario,))
+            consulta_validacion = "select * from Usuarios Where id = :1"
+            cursor.execute(consulta_validacion, (id, nombre_usuario))
             
             if len(cursor.fetchall()) > 0:
-                consulta_delete = "delete from Usuarios where nombre = :10"
-                cursor.execute(consulta_delete, (nombre_usuario,))
+                consulta_delete = "delete from Usuarios where id = :1"
+                cursor.execute(consulta_delete, (id, nombre_usuario))
                 self.db.connection.commit()
                 print(f"[INFO]: {nombre_usuario} eliminado correctamente")
                 
                 return True
             else:
-                print(f"[ERROR]: {nombre_usuario} no existe e la tabla Usuarios")
+                print(f"[ERROR]: {nombre_usuario} no existe en la tabla Usuarios")
                 
                 return False
         except Exception as e:
@@ -158,15 +158,15 @@ class pacienteModel(UsuarioModel):
         cursor = self.conexion.obtener_cursor()
 
         try:
-            validacion = "select * from Pacientes where nombre_usuario = :1"
-            cursor.execute(validacion, (nombre_usuario,))
+            validacion = "select * from Pacientes where id = :1"
+            cursor.execute(validacion, (id, nombre_usuario))
             if len(cursor.fetchall()) > 0:
                 print(f"[ERROR]: Ya existe este nombre de paciente {nombre_usuario} ")
                 
                 return False
             else:
                 consulta_insert = "insert into Pacientes (id, nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, comuna, fecha_primera_visita) values (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11)"
-                cursor.execute(consulta_insert, (nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, comuna, fecha_primera_visita))
+                cursor.execute(consulta_insert, (id, nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, comuna, fecha_primera_visita))
                 self.db.connection.commit()
                 print(f"[INFO]: paciente {nombre_usuario} creado correctamente")
                 
@@ -180,7 +180,7 @@ class pacienteModel(UsuarioModel):
             if cursor:
                 cursor.close()
     
-    def editar_paciente(self,nombre_usuario :str, *datos: tuple) -> bool:
+    def editar_paciente(self,id: int, nombre_usuario :str, *datos: tuple) -> bool:
         """
             Edita el item indicado solo si existe en la BD.\n
             Si es que no existe, lanzará el mensaje correspondiente.\n
@@ -195,12 +195,12 @@ class pacienteModel(UsuarioModel):
         
         try:
             consulta_validacion = "select * from Pacientes where nombre_usuario = :1"
-            cursor.execute(consulta_validacion, (nombre_usuario,))
+            cursor.execute(consulta_validacion, (id, nombre_usuario,))
             
             if len(cursor.fetchall()) > 0:
                 if datos:
                     consulta_update = "update Pacientes set id = :1  nombre_usuario = :2, clave = :3, nombre = :4, apellido = :5, fecha_nacimiento = :6, telefono = :7, email = :8, tipo = :9, comuna = :10, fecha_primera_visita = :11"
-                    cursor.execute(consulta_update, (nombre_usuario, datos[0], datos[2], datos[3], datos[4], datos[5], datos[6], datos[7], datos[8], datos[9], datos[10], nombre_usuario,))
+                    cursor.execute(consulta_update, (id, datos[0], datos[2], datos[3], datos[4], datos[5], datos[6], datos[7], datos[8], datos[9], datos[10], id,))
                     self.db.connection.commit()
                     print(f"[INFO]: {nombre_usuario} editado correctamente")
                     
@@ -247,7 +247,7 @@ class pacienteModel(UsuarioModel):
             if cursor:
                 cursor.close()
                 
-    def eliminar_pacientes(self, nombre_usuario: str) -> bool:
+    def eliminar_pacientes(self,id: int, nombre_usuario: str) -> bool:
         """
             Elimina el item indicado, validando que exista en la BD.
 
@@ -259,11 +259,11 @@ class pacienteModel(UsuarioModel):
         cursor = self.db.obtener_cursor()
         
         try:
-            consulta_validacion = "select * from Pacientes Where nombre_usuario = :1"
-            cursor.execute(consulta_validacion, (nombre_usuario,))
+            consulta_validacion = "select * from Pacientes Where id = :1"
+            cursor.execute(consulta_validacion, (id, nombre_usuario))
             
             if len(cursor.fetchall()) > 0:
-                consulta_delete = "delete from Pacientes where nombre = :1"
+                consulta_delete = "delete from Pacientes where id = :1"
                 cursor.execute(consulta_delete, (nombre_usuario,))
                 self.db.connection.commit()
                 print(f"[INFO]: {nombre_usuario} eliminado correctamente")
@@ -293,15 +293,15 @@ class DoctorModel(UsuarioModel):
         cursor = self.conexion.obtener_cursor()
 
         try:
-            validacion = "select * from Doctores where nombre_usuario = :1"
-            cursor.execute(validacion, (nombre_usuario,))
+            validacion = "select * from Doctores where id = :1"
+            cursor.execute(validacion, (id, nombre_usuario,))
             if len(cursor.fetchall()) > 0:
                 print(f"[ERROR]: Ya existe este nombre de Doctor {nombre_usuario} ")
                 
                 return False
             else:
                 consulta_insert = "insert into Doctores (id, nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, especialidad, horario_atencion, fecha_ingreso) values (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10, :11, :12)"
-                cursor.execute(consulta_insert, (nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, especialidad, horario_atencion, fecha_ingreso))
+                cursor.execute(consulta_insert, (id, nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, especialidad, horario_atencion, fecha_ingreso))
                 self.db.connection.commit()
                 print(f"[INFO]: Doctor {nombre_usuario} creado correctamente")
                 
@@ -363,7 +363,7 @@ class DoctorModel(UsuarioModel):
         cursor = self.db.obtener_cursor()
         
         try:
-            consulta = "select nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, especialidad, horario_atencion, fecha_ingreso from Doctores "
+            consulta = "select  id, nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, especialidad, horario_atencion, fecha_ingreso from Doctores "
             cursor.execute(consulta)
             datos = cursor.fetchall()
             
@@ -382,7 +382,7 @@ class DoctorModel(UsuarioModel):
             if cursor:
                 cursor.close()
                 
-    def eliminar_usuario(self, nombre_usuario: str) -> bool:
+    def eliminar_usuario(self,id: int, nombre_usuario: str) -> bool:
         """
             Elimina el item indicado, validando que exista en la BD.
 
@@ -394,18 +394,18 @@ class DoctorModel(UsuarioModel):
         cursor = self.db.obtener_cursor()
         
         try:
-            consulta_validacion = "select * from Doctores Where nombre_usuario = :1"
+            consulta_validacion = "select * from Doctores Where id = :1"
             cursor.execute(consulta_validacion, (nombre_usuario,))
             
             if len(cursor.fetchall()) > 0:
-                consulta_delete = "delete from Pacientes where nombre = :1"
+                consulta_delete = "delete from Pacientes where id = :1"
                 cursor.execute(consulta_delete, (nombre_usuario,))
                 self.db.connection.commit()
                 print(f"[INFO]: {nombre_usuario} eliminado correctamente")
                 
                 return True
             else:
-                print(f"[ERROR]: {nombre_usuario} no existe e la tabla Doctores")
+                print(f"[ERROR]: {nombre_usuario} no existe en la tabla Doctores")
                 
                 return False
         except Exception as e:
