@@ -1,0 +1,282 @@
+from config.db_config import ConexionOracle
+
+class UsuarioModel :
+    def __init__(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: int, telefono: int, email: str, tipo: str, conexion: ConexionOracle):
+        self.id = id
+        self.nombre_usuario = nombre_usuario
+        self.clave = clave
+        self.nombre = nombre
+        self.apellido = apellido
+        self.fecha_nacimiento = fecha_nacimiento
+        self.telefono = telefono
+        self.email = email
+        self.tipo = tipo
+        self.db = conexion
+        
+    def Crear_usuario(self, id, nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo) -> bool:
+        """
+            Guarda el item actual si es que este no existe en la BD.\n
+            Si es que ya existe, lanzará un mensaje de existencia.\n
+            returns Boolean
+        """
+        
+        cursor = self.db.obtener_cursor()
+        
+        try:
+            consulta_validacion = "select * from usuarios where nombre_usuario = :1"
+            cursor.execute(consulta_validacion,(nombre_usuario,))
+            
+            if len(cursor.fetchall()) >0:
+                print(f"[ERROR]: Ya existe este nombre de usuario {nombre_usuario} ")
+                
+                return False
+            else:
+                consulta_insert = "insert into Usuarios (nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo) values (:1, :2, :3, :4, :5, :6, :7, :8)"
+                cursor.execute(consulta_insert, (nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo))
+                self.db.connection.commit()
+                print(f"[INFO]: {nombre_usuario} creado correctamente")
+                
+                return True
+        
+        except Exception as e:
+            print(f"[ERROR]: No se pudo crear usuario -> {e}")
+            
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+    
+    def editar_usuarios(self,nombre_usuario :str, *datos: tuple) -> bool:
+        """
+            Edita el item indicado solo si existe en la BD.\n
+            Si es que no existe, lanzará el mensaje correspondiente.\n
+
+            params
+            - nombre_usuario : nombre del item a editar
+            - datos : (nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo)
+
+            returns Boolean
+        """
+        cursor = self.db.obtener_cursor()
+        
+        try:
+            consulta_validacion = "select * from usuarios where nombre_usuario = :1"
+            cursor.execute(consulta_validacion, (nombre_usuario,))
+            
+            if len(cursor.fetchall()) > 0:
+                if datos:
+                    consulta_update = "update Usuarios set  nombre_usuario = :1, clave = :2, nombre = :3, apellido = :4, fecha_nacimiento = :5, telefono = :6, email = :7, tipo = :8"
+                    cursor.execute(consulta_update, (nombre_usuario, datos[0], datos[2], datos[3], datos[4], datos[5], datos[6], datos[7], nombre_usuario,))
+                    self.db.connection.commit()
+                    print(f"[INFO]: {nombre_usuario} editado correctamente")
+                    
+                    return True
+                else:
+                    print(f"[ERROR]: Sin datos ingresados para {nombre_usuario}")
+                    return False
+            else:
+                print(f"[ERROR]: {nombre_usuario} no existe en la tabla Usuarios")
+                
+                return False
+        except Exception as e:
+            print(f"[ERROR]: Error al editar {nombre_usuario} -> {e}")
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+    
+    def mostrar_usuarios(self) -> list:
+        """
+            Muestra los usuarios actuales en la BD.
+
+            returns List
+        """
+        cursor = self.db.obtener_cursor()
+        
+        try:
+            consulta = "select id, nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo from Usuarios "
+            cursor.execute(consulta)
+            datos = cursor.fetchall()
+            
+            if len(datos) > 0:
+                return datos
+            else:
+                print("[INFO]: sin datos encontrados para Usuarios")
+                
+                return []
+        except Exception as e:
+            print(f"[ERROR]: Error al obtener usuaios desde BD -> {e}")
+            
+            return []
+        
+        finally:
+            if cursor:
+                cursor.close()
+                
+    def eliminar_usuario(self, nombre_usuario: str) -> bool:
+        """
+            Elimina el item indicado, validando que exista en la BD.
+
+            params
+            - nombre_usuario : item a eliminar
+
+            return Boolean
+        """
+        cursor = self.db.obtener_cursor()
+        
+        try:
+            consulta_validacion = "select * from Usuarios Where nombre_usuario = :1"
+            cursor.execute(consulta_validacion, (nombre_usuario,))
+            
+            if len(cursor.fetchall()) > 0:
+                consulta_delete = "delete from Usuarios where nombre = :5"
+                cursor.execute(consulta_delete, (nombre_usuario,))
+                self.db.connection.commit()
+                print(f"[INFO]: {nombre_usuario} eliminado correctamente")
+                
+                return True
+            else:
+                print(f"[ERROR]: {nombre_usuario} no existe e la tabla Usuarios")
+                
+                return False
+        except Exception as e:
+            print(f"[ERROR]: Error al eliminar {nombre_usuario} -> {e }")
+            
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+        
+class pacienteModel(UsuarioModel)
+    def __init__(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: int, telefono: int, email: str, tipo: str, comuna: str, fecha_primera_visita: int, conexion: ConexionOracle):
+            super().__init__(nombre_usuario ,clave , nombre, apellido, fecha_nacimiento, telefono, email, tipo)
+            self.comuna = comuna
+            self.fecha_primera_visita = fecha_primera_visita
+
+    def crear_paciente(self, id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: int, telefono: int, email: str, tipo: str, comuna: str, fecha_primera_visita: int) -> bool:
+        
+        cursor = self.conexion.obtener_cursor()
+
+        try:
+            validacion = "select * from Pacientes where nombre_usuario = :1"
+            cursor.execute(validacion, (nombre_usuario,))
+            if len(cursor.fetchall()) > 0:
+                print(f"[ERROR]: Ya existe este nombre de paciente {nombre_usuario} ")
+                
+                return False
+            else:
+                consulta_insert = "insert into Pacientes (nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, comuna, fecha_primera_visita) values (:1, :2, :3, :4, :5, :6, :7, :8, :9, :10)"
+                cursor.execute(consulta_insert, (nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, comuna, fecha_primera_visita))
+                self.db.connection.commit()
+                print(f"[INFO]: paciente {nombre_usuario} creado correctamente")
+                
+                return True
+        
+        except Exception as e:
+            print(f"[ERROR]: No se pudo registrar paciente {nombre_usuario} -> {e}")
+            
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+    
+    def editar_usuarios(self,nombre_usuario :str, *datos: tuple) -> bool:
+        """
+            Edita el item indicado solo si existe en la BD.\n
+            Si es que no existe, lanzará el mensaje correspondiente.\n
+
+            params
+            - nombre_usuario : nombre del item a editar
+            - datos : (nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, comuna, fecha_primera_visita)
+
+            returns Boolean
+        """
+        cursor = self.db.obtener_cursor()
+        
+        try:
+            consulta_validacion = "select * from pacientes where nombre_usuario = :1"
+            cursor.execute(consulta_validacion, (nombre_usuario,))
+            
+            if len(cursor.fetchall()) > 0:
+                if datos:
+                    consulta_update = "update Usuarios set  nombre_usuario = :1, clave = :2, nombre = :3, apellido = :4, fecha_nacimiento = :5, telefono = :6, email = :7, tipo = :8"
+                    cursor.execute(consulta_update, (nombre_usuario, datos[0], datos[2], datos[3], datos[4], datos[5], datos[6], datos[7], nombre_usuario,))
+                    self.db.connection.commit()
+                    print(f"[INFO]: {nombre_usuario} editado correctamente")
+                    
+                    return True
+                else:
+                    print(f"[ERROR]: Sin datos ingresados para {nombre_usuario}")
+                    return False
+            else:
+                print(f"[ERROR]: {nombre_usuario} no existe en la tabla Usuarios")
+                
+                return False
+        except Exception as e:
+            print(f"[ERROR]: Error al editar {nombre_usuario} -> {e}")
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+    
+    def mostrar_usuarios(self) -> list:
+        """
+            Muestra los usuarios actuales en la BD.
+
+            returns List
+        """
+        cursor = self.db.obtener_cursor()
+        
+        try:
+            consulta = "select nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo from Usuarios "
+            cursor.execute(consulta)
+            datos = cursor.fetchall()
+            
+            if len(datos) > 0:
+                return datos
+            else:
+                print("[INFO]: sin datos encontrados para Usuarios")
+                
+                return []
+        except Exception as e:
+            print(f"[ERROR]: Error al obtener usuaios desde BD -> {e}")
+            
+            return []
+        
+        finally:
+            if cursor:
+                cursor.close()
+                
+    def eliminar_usuario(self, nombre_usuario: str) -> bool:
+        """
+            Elimina el item indicado, validando que exista en la BD.
+
+            params
+            - nombre_usuario : item a eliminar
+
+            return Boolean
+        """
+        cursor = self.db.obtener_cursor()
+        
+        try:
+            consulta_validacion = "select * from Usuarios Where nombre_usuario = :1"
+            cursor.execute(consulta_validacion, (nombre_usuario,))
+            
+            if len(cursor.fetchall()) > 0:
+                consulta_delete = "delete from Usuarios where nombre = :5"
+                cursor.execute(consulta_delete, (nombre_usuario,))
+                self.db.connection.commit()
+                print(f"[INFO]: {nombre_usuario} eliminado correctamente")
+                
+                return True
+            else:
+                print(f"[ERROR]: {nombre_usuario} no existe e la tabla Usuarios")
+                
+                return False
+        except Exception as e:
+            print(f"[ERROR]: Error al eliminar {nombre_usuario} -> {e }")
+            
+            return False
+        finally:
+            if cursor:
+                cursor.close()
