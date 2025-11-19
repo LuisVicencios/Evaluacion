@@ -5,7 +5,7 @@ class InsumosModel :
         self.nombre = nombre
         self.tipo = tipo
         self.stock = stock
-        
+        self.db = conexion
         
     def agregar_producto(self, id, nombre, tipo, stock) -> bool:
         """
@@ -140,3 +140,12 @@ class InsumosModel :
         finally:
             if cursor:
                 cursor.close()
+
+class agenda():
+    def __init__(self,id :int, fecha_consulta: str, estado: str, conexion: ConexionOracle)
+        self.id = id
+        self.fecha_consulta = fecha_consulta
+        self.estado = estado
+        self.db = conexion
+    
+    def CrearAgenda
