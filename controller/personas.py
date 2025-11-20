@@ -31,3 +31,4 @@ class UsuarioController:
         
         else:
             return []
+        
