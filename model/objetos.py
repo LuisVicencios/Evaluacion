@@ -142,7 +142,7 @@ class InsumosModel :
             if cursor:
                 cursor.close()
 
-class agenda():
+class AgendaModel():
     def __init__(self,id :int, fecha_consulta: str, estado: str, conexion: ConexionOracle):
         self.id = id
         self.fecha_consulta = fecha_consulta
@@ -256,7 +256,7 @@ class agenda():
             if cursor:
                 cursor.close()           
                 
-class Consultas():
+class ConsultasModel():
     def __init__(self,id: int, fecha: str, comentarios: str, conexion: ConexionOracle ):
         self.id = id
         self.fecha = fecha
@@ -372,123 +372,8 @@ class Consultas():
             if cursor:
                 cursor.close()
 
-class Consultas():
-    def __init__(self,id: int, fecha: str, comentarios: str, conexion: ConexionOracle ):
-        self.id = id
-        self.fecha = fecha
-        self.comentarios = comentarios
-        self.db = conexion
-        
-    def crear_consulta(self, id, fecha, comentarios) -> bool:
-        
-        cursor = cursor.db.obtener_cursor()
-        
-        try:
-            consulta_validacion = "select * from LV_Consultas where id = :1"
-            cursor.execute(consulta_validacion, (id,))
-
-            if len(cursor.fetchall()) > 0:
-                print(f"[ERROR]: Ya existe un ítem con la id {id}")
-
-                return False
-            else:
-                consulta_insert = "insert into LV_Consultas (id, fecha, comentarios) values (:1, :2, :3)"
-                cursor.execute(consulta_insert, (id, fecha, comentarios))
-                self.db.connection.commit()
-                print(f"[INFO]: {id} guardado correctamente")
-
-                return True
-        except Exception as e:
-            print(f"[ERROR]: Error al guardar {id} -> {e}")
-
-            return False
-        finally:
-            if cursor:
-                cursor.close()
-
-    def editar_consultas(self, id: int, *datos: tuple) -> bool:
-
-        cursor = self.db.obtener_cursor()
-
-        try:
-            consulta_validacion = "select * from LV_Consultas where id = :1"
-            cursor.execute(consulta_validacion, (id,))
-
-            if len(cursor.fetchall()) > 0:
-                if datos:
-                    consulta_update = "update LV_Consultas set id = :1, fecha = :2, comentarios = :3 where id = :1 "
-                    cursor.execute(consulta_update, (id, datos[0], datos[1], datos[2], id,))
-                    self.db.connection.commit()
-                    print(f"[INFO]: {id} editado correctamente")
-
-                    return True
-                else:
-                    print(f"[ERROR]: Sin datos ingresados para {id}")
-
-                    return False
-            else:
-                print(f"[ERROR]: {id} no existe en la tabla de LV_Consultas.")
-
-                return False
-        except Exception as e:
-            print(f"[ERROR]: Error al editar {id} -> {e}")
-
-            return False
-        finally:
-            if cursor:
-                cursor.close()
-
-    def mostrar_consultas(self) -> list:
-       
-        cursor = self.db.obtener_cursor()
-
-        try:
-            consulta = "select * from LV_consultas"
-            cursor.execute(consulta)
-            datos = cursor.fetchall()
-
-            if len(datos) > 0:
-                return datos
-            else:
-                print("[INFO]: Sin datos encontrados para LV_Consultas.")
-
-                return []
-        except Exception as e:
-            print(f"[ERROR]: Error al obtener items desde BD -> {e}")
-
-            return []
-        finally:
-            if cursor:
-                cursor.close()
-
-    def eliminar_Consulta(self, id: int) -> bool:
-      
-        cursor = self.db.obtener_cursor()
-
-        try:
-            consulta_validacion = "select * from LV_Consultas where id = :1"
-            cursor.execute(consulta_validacion, (id,))
-
-            if len(cursor.fetchall()) > 0:
-                consulta_delete = "delete from LV_Consultas where id = :1"
-                cursor.execute(consulta_delete, (id,))
-                self.db.connection.commit()
-                print(f"[INFO]: {id} eliminado correctamente")
-
-                return True
-            else:
-                print(f"[ERROR]: {id} no existe en la tabla de LV_Consultas.")
-
-                return False
-        except Exception as e:
-            print(f"[ERROR]: Error al eliminar {id} -> {e}")
-
-            return False
-        finally:
-            if cursor:
-                cursor.close()
                 
-class Recetas():
+class RecetasModel():
     def __init__(self, id: int, descripcion: str, conexion: ConexionOracle):
         self.id = id
         self.descripcion = descripcion

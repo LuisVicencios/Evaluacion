@@ -5,7 +5,7 @@ def conectarBD():
     """
         Realiza conexión a BD utilizando función predefinida.
     """
-    db = ConexionOracle("system", "vicencio0195", "localhost:1521/xe")
+    db = ConexionOracle("system", "vicencio", "localhost:1521/xe")
     db.conectar()
 
     # validar_tablas(db)
