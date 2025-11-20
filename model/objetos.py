@@ -2,6 +2,7 @@ from config.db_config import ConexionOracle
 
 class InsumosModel :
     def __init__(self,id: int, nombre: str, tipo: str, stock: int, conexion: ConexionOracle):
+        self.id = id
         self.nombre = nombre
         self.tipo = tipo
         self.stock = stock
@@ -9,7 +10,7 @@ class InsumosModel :
         
     def agregar_producto(self, id, nombre, tipo, stock) -> bool:
         """
-            Guarda el item actual si es que este no existe en la BD.\n
+            Guarda el producto actual si es que este no existe en la BD.\n
             Si es que ya existe, lanzará un mensaje de existencia.\n
             returns Boolean
         """
@@ -18,10 +19,10 @@ class InsumosModel :
         
         try:
             consulta_validacion = "select * from Insumos where id = :1"
-            cursor.execute(consulta_validacion,(nombre,))
+            cursor.execute(consulta_validacion,(id))
             
             if len(cursor.fetchall()) >0:
-                print(f"[ERROR]: Ya existe este nombre de Insumo {nombre} ")
+                print(f"[ERROR]: Ya existe esta ID: {id} ")
                 
                 return False
             else:
@@ -40,46 +41,46 @@ class InsumosModel :
             if cursor:
                 cursor.close()
     
-    def editar_insumos(self,id: int, nombre :str, *datos: tuple) -> bool:
+    def editar_insumos(self,id: int, *datos: tuple) -> bool:
         """
-            Edita el item indicado solo si existe en la BD.\n
+            Edita el insumo indicado solo si existe en la BD.\n
             Si es que no existe, lanzará el mensaje correspondiente.\n
 
             params
             - nombre_usuario : nombre del item a editar
-            - datos : (nombre, tipo, stock)
+            - datos : (id)
 
             returns Boolean
         """
         cursor = self.db.obtener_cursor()
         
         try:
-            consulta_validacion = "select * from Insumos where nombre = :1"
-            cursor.execute(consulta_validacion, (nombre,))
+            consulta_validacion = "select * from Insumos where id = :1"
+            cursor.execute(consulta_validacion, (id,))
             
             if len(cursor.fetchall()) > 0:
                 if datos:
                     consulta_update = "update Insumos set id = :1, nombre = :2, tipo = :3, stock = :4"
-                    cursor.execute(consulta_update, (nombre, datos[0], datos[1], datos[2], datos[3], nombre, ))
+                    cursor.execute(consulta_update, (id, datos[0], datos[1], datos[2], datos[3], id, ))
                     self.db.connection.commit()
-                    print(f"[INFO]: {nombre} editado correctamente")
+                    print(f"[INFO]: ID {id}, editado correctamente")
                     
                     return True
                 else:
-                    print(f"[ERROR]: Sin datos ingresados para {nombre}")
+                    print(f"[ERROR]: Sin datos ingresados para {id}")
                     return False
             else:
-                print(f"[ERROR]: {nombre} no existe en la tabla Insumos")
+                print(f"[ERROR]: {id} no existe en la tabla Insumos")
                 
                 return False
         except Exception as e:
-            print(f"[ERROR]: Error al editar {nombre} -> {e}")
+            print(f"[ERROR]: Error al editar {id} -> {e}")
             return False
         finally:
             if cursor:
                 cursor.close()
     
-    def mostrar_usuarios(self) -> list:
+    def mostrar_usuarios(self):
         """
             Muestra los Insumos actuales en la BD.
 
@@ -107,34 +108,34 @@ class InsumosModel :
             if cursor:
                 cursor.close()
                 
-    def eliminar_usuario(self, nombre: str) -> bool:
+    def eliminar_usuario(self, id: int) -> bool :
         """
             Elimina el item indicado, validando que exista en la BD.
 
             params
-            - nombre : item a eliminar
+            - id : item a eliminar
 
             return Boolean
         """
         cursor = self.db.obtener_cursor()
         
         try:
-            consulta_validacion = "select * from Insumos Where nombre = :1"
-            cursor.execute(consulta_validacion, (nombre,))
+            consulta_validacion = "select * from Insumos Where id = :1"
+            cursor.execute(consulta_validacion, (id,))
             
             if len(cursor.fetchall()) > 0:
                 consulta_delete = "delete from Insumos where nombre = :5"
-                cursor.execute(consulta_delete, (nombre,))
+                cursor.execute(consulta_delete, (id,))
                 self.db.connection.commit()
-                print(f"[INFO]: {nombre} eliminado correctamente")
+                print(f"[INFO]: {id} eliminado correctamente")
                 
                 return True
             else:
-                print(f"[ERROR]: {nombre} no existe e la tabla Insumos")
+                print(f"[ERROR]: {id} no existe e la tabla Insumos")
                 
                 return False
         except Exception as e:
-            print(f"[ERROR]: Error al eliminar {nombre} -> {e }")
+            print(f"[ERROR]: Error al eliminar {id} -> {e }")
             
             return False
         finally:
