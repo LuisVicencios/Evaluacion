@@ -181,16 +181,7 @@ class pacienteModel(UsuarioModel):
                 cursor.close()
     
     def editar_paciente(self,id: int, *datos: tuple) -> bool:
-        """
-            Edita el item indicado solo si existe en la BD.\n
-            Si es que no existe, lanzará el mensaje correspondiente.\n
-
-            params
-            - id : nombre del item a editar
-            - datos : (nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, comuna, fecha_primera_visita)
-
-            returns Boolean
-        """
+    
         cursor = self.db.obtener_cursor()
         
         try:
@@ -220,11 +211,7 @@ class pacienteModel(UsuarioModel):
                 cursor.close()
     
     def mostrar_pacientes(self) -> list:
-        """
-            Muestra los usuarios actuales en la BD.
-
-            returns List
-        """
+        
         cursor = self.db.obtener_cursor()
         
         try:
@@ -248,14 +235,7 @@ class pacienteModel(UsuarioModel):
                 cursor.close()
                 
     def eliminar_pacientes(self,id: int) -> bool:
-        """
-            Elimina el item indicado, validando que exista en la BD.
-
-            params
-            - id : item a eliminar
-
-            return Boolean
-        """
+        
         cursor = self.db.obtener_cursor()
         
         try:
@@ -316,16 +296,7 @@ class DoctorModel(UsuarioModel):
                 cursor.close()
     
     def editar_Doctores(self,id :int, *datos: tuple) -> bool:
-        """
-            Edita el item indicado solo si existe en la BD.\n
-            Si es que no existe, lanzará el mensaje correspondiente.\n
-
-            params
-            - id : nombre del item a editar
-            - datos : (nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, especialidad, horario_atencion, fecha_ingreso)
-
-            returns Boolean
-        """
+       
         cursor = self.db.obtener_cursor()
         
         try:
@@ -355,11 +326,7 @@ class DoctorModel(UsuarioModel):
                 cursor.close()
     
     def mostrar_doctores(self) -> list:
-        """
-            Muestra los Doctores actuales en la BD.
-
-            returns List
-        """
+        
         cursor = self.db.obtener_cursor()
         
         try:
@@ -383,14 +350,7 @@ class DoctorModel(UsuarioModel):
                 cursor.close()
                 
     def eliminar_usuario(self,id: int) -> bool:
-        """
-            Elimina el item indicado, validando que exista en la BD.
-
-            params
-            - id : item a eliminar
-
-            return Boolean
-        """
+       
         cursor = self.db.obtener_cursor()
         
         try:
@@ -405,7 +365,7 @@ class DoctorModel(UsuarioModel):
                 
                 return True
             else:
-                print(f"[ERROR]: {id} no existe en la tabla Doctores")
+                print(f"[ERROR]: {id} no existe en la tabla LV_Doctores")
                 
                 return False
         except Exception as e:
