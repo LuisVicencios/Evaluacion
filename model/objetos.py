@@ -80,7 +80,7 @@ class InsumosModel :
             if cursor:
                 cursor.close()
     
-    def mostrar_usuarios(self)-> list :
+    def mostrar_insumos(self)-> list :
         """
             Muestra los Insumos actuales en la BD.
 
@@ -438,7 +438,7 @@ class RecetasModel():
             if cursor:
                 cursor.close()
 
-    def mostrar_consultas(self) -> list:
+    def mostrar_recetas(self) -> list:
        
         cursor = self.db.obtener_cursor()
 

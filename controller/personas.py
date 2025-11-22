@@ -1,9 +1,19 @@
 from model.personas import UsuarioModel, pacienteModel, DoctorModel
+import re
+
+SUS_KEYS = [
+    r";", r"--", r"/\*", r"\bOR\b", r"\bAND\b", r"\bUNION\b",
+    r"\bSELECT\b", r"\bINSERT\b", r"\bUPDATE\b", r"\bDELETE\b",
+    r"\bDROP\b", r"\bEXEC\b"
+]
+
+patron = re.compile("|".join(SUS_KEYS), re.IGNORECASE)
 
 class UsuarioController:
     """
         Controlador del usuario.\n
-        Métodos para registrar y mostrar usuarios.
+        Métodos para registrar y mostrar usuarios, gestiona la insersion de codigo SQL,
+        y que no falten datos necesarios.
     """
     def __init__(self, modelo: UsuarioModel):
         self.modelo = modelo
@@ -15,6 +25,11 @@ class UsuarioController:
         """
         if not id or not nombre_usuario or not clave or not nombre or not apellido or not fecha_nacimiento or not telefono or not email or not tipo:
             print("[Error]: Datos faltantes para registro de usuario.")
+    
+            return False
+        if patron.search(nombre) or patron.search(clave) or patron.search(nombre) or patron.search(apellido) or patron.search(email) or patron.search(tipo):
+            print("[ERROR]: No se puede ingresar codigoSQL en los string.")
+
             return False
         
         return self.modelo.Crear_usuario(id, nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo)
