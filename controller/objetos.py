@@ -89,7 +89,7 @@ class ConsultasController:
     def __init__(self, modelo: ConsultasModel):
         self.modelo = modelo
         
-    def registrar_insumo(self,id: int, fecha: str, comentarios: str) -> bool:
+    def registrar_consulta(self,id: int, fecha: str, comentarios: str) -> bool:
 
         if not id or not fecha or not comentarios:
             print("[Error]: Datos faltantes para registro de usuario.")
@@ -118,7 +118,7 @@ class RecetasController:
     def __init__(self, modelo: RecetasModel):
         self.modelo = modelo
         
-    def registrar_insumo(self, id: int, descripcion: str) -> bool:
+    def registrar_receta(self, id: int, descripcion: str) -> bool:
 
         if not id or not descripcion:
             print("[Error]: Datos faltantes para registro de usuario.")

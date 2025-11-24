@@ -1,6 +1,6 @@
 class UsuariosView:
     @staticmethod
-    def mostrar_Usuarios(Usuarios: list) -> None:
+    def mostrar_usuarios(Usuarios: list) -> None:
            
         if len(Usuarios) > 0:
             print("\n- Lista de Usuarios -")
@@ -10,9 +10,9 @@ class UsuariosView:
         else:
             print("[ERROR]: Sin Usuarios registradas")
 
-class PacientessView:
+class PacientesView:
     @staticmethod
-    def mostrar_Paciente(Pacientes: list) -> None:
+    def mostrar_paciente(Pacientes: list) -> None:
        
         if len(Pacientes) > 0:
             print("\n- Lista de Pacientes -")
@@ -24,7 +24,7 @@ class PacientessView:
 
 class DoctoresView:
     @staticmethod
-    def mostrar_Doctores(Doctores: list) -> None:
+    def mostrar_doctores(Doctores: list) -> None:
            
         if len(Doctores) > 0:
             print("\n- Lista de Doctores -")
