@@ -1,4 +1,5 @@
 from config.db_config import ConexionOracle
+from datetime import date
 
 class InsumosModel :
     def __init__(self,id: int, nombre: str, tipo: str, stock: int, conexion: ConexionOracle):
@@ -143,7 +144,7 @@ class InsumosModel :
                 cursor.close()
 
 class AgendaModel():
-    def __init__(self,id :int, fecha_consulta: str, estado: str, conexion: ConexionOracle):
+    def __init__(self,id :int, fecha_consulta: date, estado: str, conexion: ConexionOracle):
         self.id = id
         self.fecha_consulta = fecha_consulta
         self.estado = estado
@@ -257,7 +258,7 @@ class AgendaModel():
                 cursor.close()           
                 
 class ConsultasModel():
-    def __init__(self,id: int, fecha: str, comentarios: str, conexion: ConexionOracle ):
+    def __init__(self,id: int, fecha: date, comentarios: str, conexion: ConexionOracle ):
         self.id = id
         self.fecha = fecha
         self.comentarios = comentarios

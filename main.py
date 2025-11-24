@@ -1,14 +1,14 @@
 import bcrypt
-from config.db_config import ConexionOracle
+from config.db_config import ConexionOracle, validar_tablas
 
 def conectarBD():
     """
         Realiza conexión a BD utilizando función predefinida.
     """
-    db = ConexionOracle("system", "vicencio", "localhost:1521/xe")
+    db = ConexionOracle("system", "Ina.2025", "localhost:1521/xe")
     db.conectar()
 
-    # validar_tablas(db)
+    validar_tablas(db)
 
     return db
 

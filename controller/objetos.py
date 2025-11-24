@@ -1,5 +1,6 @@
 import re
 from model.objetos import InsumosModel, ConsultasModel, RecetasModel, AgendaModel
+from datetime import date
 
 SUS_KEYS = [
     r";", r"--", r"/\*", r"\bOR\b", r"\bAND\b", r"\bUNION\b",
@@ -42,25 +43,14 @@ class InsumoController:
         else:
             return self.modelo.agregar_producto(id, nombre, tipo, stock)
     
-    def listar_insumos(self) -> list:
-        """
-            Muestra los usuarios registrados en BD.\
-            returns Lista vacía si es que no hay usuarios, o lista de usuarios registrados.
-        """
-        insumos = self.modelo.mostrar_insumos()
-
-        if len(insumos) > 0:
-            return [{ "id": i[0], "nombre": i[1], "tipo": i[2], "stock": i[3]} for i in insumos]
-        
-        else:
-            return []
+    
     
 class AgendaController:
          
     def __init__(self, modelo: AgendaModel):
         self.modelo = modelo
         
-    def registrar_agenda(self,id :int, fecha_consulta: str, estado: str) -> bool:
+    def registrar_agenda(self,id :int, fecha_consulta: date, estado: str) -> bool:
         
         if not id or not fecha_consulta or not estado:
             print("[Error]: Datos faltantes para registro de usuario.")
@@ -74,22 +64,13 @@ class AgendaController:
         else:
             return self.modelo.Crear_Agenda(id, fecha_consulta, estado)
         
-    def listar_agenda(self) -> list:
-        
-        agenda = self.modelo.mostrar_agenda()
-
-        if len(agenda) > 0:
-            return [{ "id": a[0], "fecha_consulta": a[1], "estado": a[2]} for a in agenda]
-        
-        else:
-            return []
         
 class ConsultasController:
          
     def __init__(self, modelo: ConsultasModel):
         self.modelo = modelo
         
-    def registrar_consulta(self,id: int, fecha: str, comentarios: str) -> bool:
+    def registrar_consulta(self,id: int, fecha: date, comentarios: str) -> bool:
 
         if not id or not fecha or not comentarios:
             print("[Error]: Datos faltantes para registro de usuario.")
@@ -103,15 +84,6 @@ class ConsultasController:
         else:
             return self.modelo.crear_consulta(id, fecha, comentarios)
         
-    def listar_consultas(self) -> list:
-        
-        consultas = self.modelo.mostrar_consultas()
-
-        if len(consultas) > 0:
-            return [{ "id": c[0], "fecha": c[1], "comentarios": c[2]} for c in consultas]
-        
-        else:
-            return []
         
 class RecetasController:
          
@@ -132,12 +104,3 @@ class RecetasController:
         else:
             return self.modelo.crear_Receta(id, descripcion)
     
-    def listar_recetas(self) -> list:
-        
-        recetas = self.modelo.mostrar_recetas()
-
-        if len(recetas) > 0:
-            return [{ "id": r[0], "fecha_consulta": r[1]} for r in recetas]
-        
-        else:
-            return []

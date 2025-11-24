@@ -1,5 +1,6 @@
 from model.personas import UsuarioModel, pacienteModel, DoctorModel
 import re
+from datetime import date
 
 SUS_KEYS = [
     r";", r"--", r"/\*", r"\bOR\b", r"\bAND\b", r"\bUNION\b",
@@ -18,7 +19,7 @@ class UsuarioController:
     def __init__(self, modelo: UsuarioModel):
         self.modelo = modelo
 
-    def registrar_usuario(self,id: int, nombre_usuario: str, clave: str, nombre: str, apellido: str, fecha_nacimiento: int, telefono: int, email: str, tipo: str) -> bool:
+    def registrar_usuario(self,id: int, nombre_usuario: str, clave: str, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo: str) -> bool:
         """
             Recibe atributos de UsuarioModel, realiza registro en BD.\n
             returns Boolean
@@ -51,7 +52,7 @@ class PacienteController:
     def __init__(self, modelo: pacienteModel):
         self.modelo = modelo
         
-    def registrar_paciente(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: int, telefono: int, email: str, tipo: str, comuna: str, fecha_primera_visita: int) -> bool:
+    def registrar_paciente(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo: str, comuna: str, fecha_primera_visita: date) -> bool:
         
         if not id or not nombre_usuario or not clave or not nombre or not apellido or not fecha_nacimiento or not telefono or not email or not tipo or not comuna or not fecha_primera_visita:
             print("[Error]: Datos faltantes para registro de pacientes.")
@@ -75,7 +76,7 @@ class DoctorController:
     def __init__(self, modelo:DoctorModel):
         self.modelo = modelo
         
-    def registrar_doctor(self, id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: int, telefono: int, email: str, tipo: str,especialidad: str, horario_atencion: str, fecha_ingreso: int ) -> bool:
+    def registrar_doctor(self, id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo: str,especialidad: str, horario_atencion: str, fecha_ingreso: int ) -> bool:
         
         if not id or not nombre_usuario or not clave or not nombre or not apellido or not fecha_nacimiento or not telefono or not email or not tipo or not especialidad or not horario_atencion or not fecha_ingreso:
             print("[ERROR]: Datos faltantes para registro de doctores")

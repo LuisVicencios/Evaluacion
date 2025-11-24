@@ -1,7 +1,8 @@
 from config.db_config import ConexionOracle
+from datetime import date
 
 class UsuarioModel :
-    def __init__(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: int, telefono: int, email: str, tipo: str, conexion: ConexionOracle):
+    def __init__(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo: str, conexion: ConexionOracle):
         self.id = id
         self.nombre_usuario = nombre_usuario
         self.clave = clave
@@ -148,12 +149,12 @@ class UsuarioModel :
                 cursor.close()
         
 class pacienteModel(UsuarioModel):
-    def __init__(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: int, telefono: int, email: str, tipo: str, comuna: str, fecha_primera_visita: int, conexion: ConexionOracle):
+    def __init__(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo: str, comuna: str, fecha_primera_visita: date, conexion: ConexionOracle):
             super().__init__(id, nombre_usuario ,clave , nombre, apellido, fecha_nacimiento, telefono, email, tipo, conexion)
             self.comuna = comuna
             self.fecha_primera_visita = fecha_primera_visita
 
-    def crear_paciente(self, id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: str, telefono: int, email: str, tipo: str, comuna: str, fecha_primera_visita: int) -> bool:
+    def crear_paciente(self, id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo: str, comuna: str, fecha_primera_visita: date) -> bool:
         
         cursor = self.db.obtener_cursor()
 
@@ -262,13 +263,15 @@ class pacienteModel(UsuarioModel):
                 cursor.close()
 
 class DoctorModel(UsuarioModel):
-    def __init__(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento:int , telefono: int, email: str, tipo: str, especialidad: str, horario_atencion: str, fecha_ingreso: int, conexion: ConexionOracle):
+    def __init__(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento:date , telefono: int, email: str, tipo: str, especialidad: str, horario_atencion: str, fecha_ingreso: int, conexion: ConexionOracle):
             super().__init__(id, nombre_usuario ,clave , nombre, apellido, fecha_nacimiento, telefono, email, tipo, conexion)
             self.especialidad = especialidad
             self.horario_atencion = horario_atencion
             self.fecha_ingreso = fecha_ingreso
 
-    def crear_Doctor(self, id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: int, telefono: int, email: str, tipo: str,especialidad: str, horario_atencion: str, fecha_ingreso: int ) -> bool:
+            
+
+    def crear_Doctor(self, id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo: str,especialidad: str, horario_atencion: str, fecha_ingreso: int ) -> bool:
         
         cursor = self.db.obtener_cursor()
 

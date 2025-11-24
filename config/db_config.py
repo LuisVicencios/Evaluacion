@@ -43,119 +43,161 @@ class ConexionOracle:
 
         return self.connection.cursor()
     
-    def validar_tablas(db):
-        """
-        Se encarga de crear la tablas en caso de que estas no existan.
+def validar_tablas(db: ConexionOracle):
+    """
+    Se encarga de crear la tablas en caso de que estas no existan.
     """
 
-    sql_LV_Usuario = """
+    LV_Usuarios = """
             BEGIN
                 EXECUTE IMMEDIATE '
-                    CREATE TABLE Usuarios (
-                        id NUMBER PRIMARY KEY,
+                    CREATE TABLE LV_Usuarios (
+                        id integer PRIMARY KEY,
                         nombre_usuario VARCHAR2(100),
                         clave varchar2(255),
                         nombre VARCHAR2(100),
                         apellido varchar2(100),
-                        fecha_nacimiento, 
+                        fecha_nacimiento date, 
                         telefono varchar2(50),
                         email varchar2(100),
-                        tipo varchar2(200)
-                    )
-                ';
+                        tipo varchar2(200) 
+                            )
+                    ';
             EXCEPTION
                 WHEN OTHERS THEN
                     IF SQLCODE != -955 THEN
                         RAISE;
                     END IF;
             END;
-        """
+            """
     
-    sql_LV_Paciente = """
+    LV_Insumos = """
             BEGIN
                 EXECUTE IMMEDIATE '
-                    CREATE TABLE clientes (
-                        id_cliente NUMBER PRIMARY KEY,
-                        nombre VARCHAR2(100),
-                        telefono NUMBER,
-                        nacionalidad VARCHAR2(50),
-                        habitacion NUMBER,
-                        CONSTRAINT fk_habitacion_cliente FOREIGN KEY (habitacion) REFERENCES habitaciones(id_habitacion)
-                    )
-                ';
+                    CREATE TABLE LV_Insumos (
+                        id integer PRIMARY KEY,
+                        nombre varchar2(100),
+                        tipo varchar2(100),
+                        stock integer,
+                        precio_unitario integer
+                        )
+                    ';
             EXCEPTION
                 WHEN OTHERS THEN
                     IF SQLCODE != -955 THEN
                         RAISE;
                     END IF;
             END;
-        """
+            """
     
-    sql_inventario = """
+    LV_Pacientes = """
             BEGIN
                 EXECUTE IMMEDIATE '
-                    CREATE TABLE inventario (
-                        id_inventario NUMBER PRIMARY KEY,
-                        nombre VARCHAR2(100),
-                        tipo VARCHAR2(30),
-                        cantidad NUMBER,
-                        precio_costo NUMBER(8,2)
-                    )
-                ';
+                    CREATE TABLE LV_Paciente  (
+                        id  integer PRIMARY KEY,
+                        comuna VARCHAR2(100),
+                        fecha_primera_visita date ,
+                        CONSTRAINT fk_paciente_usuario FOREIGN KEY (id) REFERENCES LV_Usuarios(id)
+                        )
+                    ';
             EXCEPTION
                 WHEN OTHERS THEN
                     IF SQLCODE != -955 THEN
                         RAISE;
                     END IF;
             END;
-        """
+            """
+    
+    LV_Doctores = """
+            BEGIN
+                EXECUTE IMMEDIATE '
+                    CREATE TABLE LV_Doctores (
+                        id  integer PRIMARY KEY,
+                        especialidad varchar2(100),
+                        horario_atencion varchar2(100),
+                        fecha_ingreso date,
+                        CONSTRAINT fk_doctor_usuario FOREIGN KEY (id) references LV_Usuarios(id)
+                        )
+                    ';
+            EXCEPTION
+                WHEN OTHERS THEN
+                    IF SQLCODE != -955 THEN
+                        RAISE;
+                    END IF;
+            END;
+            """
 
-    sql_habitaciones = """
+    LV_Agenda = """
             BEGIN
                 EXECUTE IMMEDIATE '
-                    CREATE TABLE habitaciones (
-                        id_habitacion NUMBER PRIMARY KEY,
-                        numero_habitacion NUMBER UNIQUE,
-                        cantidad_personas NUMBER,
-                        estado VARCHAR2(15)
-                    )
-                ';
+                    CREATE TABLE LV_Agenda (
+                        id  integer PRIMARY KEY,
+                        id_doctor number ,
+                        id_paciente number ,
+                        fecha_consulta varchar2(100),
+                        estado varchar2(100),
+                        CONSTRAINT fk_agenda_doctor FOREIGN KEY (id) REFERENCES LV_Doctores (id),
+                        CONSTRAINT fk_agenda_paciente FOREIGN KEY (id) REFERENCES LV_Pacientes (id)
+                        )
+                    ';
             EXCEPTION
                 WHEN OTHERS THEN
                     IF SQLCODE != -955 THEN
                         RAISE;
                     END IF;
             END;
-        """
+            """
 
-    sql_boletas = """
+
+    
+    LV_Consultas = """
             BEGIN
                 EXECUTE IMMEDIATE '
-                    CREATE TABLE boletas (
-                        id_boleta NUMBER PRIMARY KEY,
-                        folio NUMBER,
-                        usuario NUMBER,
-                        cliente NUMBER,
-                        CONSTRAINT fk_boleta_usuario FOREIGN KEY (usuario) REFERENCES usuarios(id_usuario),
-                        CONSTRAINT fk_boleta_cliente FOREIGN KEY (cliente) REFERENCES clientes(id_cliente)
-                    )
-                ';
+                    CREATE TABLE LV_Consultas (
+                        id NUMBER PRIMARY KEY,
+                        id_doctor integer,
+                        id_paciente integer,
+                        descripcion varchar2(200),
+                        constraint fk_consulta_doctor FOREIGN KEY (id) REFERENCES LV_Doctores (id),
+                        constraint fk_consulta_paciente FOREIGN KEY (id) REFERENCES LV_pacientes (id)
+                        )
+                    ';
             EXCEPTION
                 WHEN OTHERS THEN
                     IF SQLCODE != -955 THEN
                         RAISE;
                     END IF;
             END;
-        """
+            """
+
+    LV_Recetas = """
+            BEGIN
+                EXECUTE IMMEDIATE '
+                    CREATE TABLE LV_Recetas (
+                        id integer PRIMARY KEY,
+                        descripcion varchar2(200),
+                        CONSTRAINT fk_receta_consulta FOREIGN KEY (id) references LV_Consultas (id)
+                        )
+                    ';
+            EXCEPTION
+                WHEN OTHERS THEN
+                    IF SQLCODE != -955 THEN
+                        RAISE;
+                    END IF;
+            END;
+            """
+    
     
     cursor = db.obtener_cursor()
 
     sentencias = [
-        sql_habitaciones,
-        sql_usuario,
-        sql_inventario,
-        sql_cliente,
-        sql_boletas,
+        LV_Usuarios,  
+        LV_Insumos,     
+        LV_Pacientes,   
+        LV_Doctores,    
+        LV_Agenda,      
+        LV_Consultas,   
+        LV_Recetas,     
     ]
 
     try:
