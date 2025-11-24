@@ -17,6 +17,7 @@ class InsumosView:
             print("[ERROR]: Sin Insumos registrados")
 
 class AgendaView:
+    @staticmethod
     def mostrar_agendas(agenda: list) -> None:
         if len(agenda) > 0:
             print("\n- Lista de agenda -")
@@ -27,6 +28,7 @@ class AgendaView:
             print("[ERROR]: Sin Agendas registrados")
 
 class ConsultasView:
+    @staticmethod
     def mostrar_Consultas(Consultas: list) -> None:
        
         if len(Consultas) > 0:
@@ -37,13 +39,3 @@ class ConsultasView:
         else:
             print("[ERROR]: Sin consultas registradas")
 
-class RecetasView:
-    def mostrar_Recetas(Recetas: list) -> None:
-           
-        if len(Recetas) > 0:
-            print("\n- Lista de Recetas -")
-
-            for r in Recetas:
-                print(f"--- id: {r['id']} | descripcion: {r['descripcion']}")
-        else:
-            print("[ERROR]: Sin Recetas registradas")

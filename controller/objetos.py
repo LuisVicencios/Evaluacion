@@ -67,7 +67,7 @@ class AgendaController:
      
             return False
         
-        if patron.search(estado):
+        if patron.search(estado) or patron.search(fecha_consulta):
             print("[ERROR]: No se puede ingresar codigoSQL en los string.")
             
             return False

@@ -18,7 +18,7 @@ class UsuarioController:
     def __init__(self, modelo: UsuarioModel):
         self.modelo = modelo
 
-    def registrar_usuario(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: int, telefono: int, email: str, tipo: str) -> bool:
+    def registrar_usuario(self,id: int, nombre_usuario: str, clave: str, nombre: str, apellido: str, fecha_nacimiento: int, telefono: int, email: str, tipo: str) -> bool:
         """
             Recibe atributos de UsuarioModel, realiza registro en BD.\n
             returns Boolean
@@ -27,7 +27,7 @@ class UsuarioController:
             print("[Error]: Datos faltantes para registro de usuario.")
     
             return False
-        if patron.search(nombre) or patron.search(clave) or patron.search(nombre) or patron.search(apellido) or patron.search(email) or patron.search(tipo):
+        if patron.search(nombre_usuario) or patron.search(clave) or patron.search(nombre) or patron.search(apellido) or patron.search(email) or patron.search(tipo):
             print("[ERROR]: No se puede ingresar codigoSQL en los string.")
 
             return False
@@ -57,6 +57,11 @@ class PacienteController:
             print("[Error]: Datos faltantes para registro de pacientes.")
             return False
         
+        if patron.search(nombre_usuario) or patron.search(clave) or patron.search(nombre) or patron.search(apellido) or patron.search(email) or patron.search(tipo) or patron.search(comuna):
+            print("[ERROR]: No se puede ingresar codigoSQL en los string.")
+
+            return False
+        
         return self.modelo.crear_paciente(id, nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, comuna, fecha_primera_visita)
         
     def listar_paciente(self) -> list:
@@ -74,6 +79,11 @@ class DoctorController:
         
         if not id or not nombre_usuario or not clave or not nombre or not apellido or not fecha_nacimiento or not telefono or not email or not tipo or not especialidad or not horario_atencion or not fecha_ingreso:
             print("[ERROR]: Datos faltantes para registro de doctores")
+            return False
+        
+        if patron.search(nombre_usuario) or patron.search(clave) or patron.search(nombre) or patron.search(apellido) or patron.search(email) or patron.search(tipo) or patron.search(especialidad) or patron.search(horario_atencion):
+            print("[ERROR]: No se puede ingresar codigoSQL en los string.")
+
             return False
         return self.modelo.crear_Doctor(id, nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo, especialidad, horario_atencion, fecha_ingreso)
     def listar_doctores(self) -> list:

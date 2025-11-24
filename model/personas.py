@@ -65,8 +65,8 @@ class UsuarioModel :
             
             if len(cursor.fetchall()) > 0:
                 if datos:
-                    consulta_update = "update LV_Usuarios set id = :1, nombre_usuario = :2, clave = :3, nombre = :4, apellido = :5, fecha_nacimiento = :6, telefono = :7, email = :8, tipo = :9"
-                    cursor.execute(consulta_update, (id, datos[0], datos[1], datos[2], datos[3], datos[4], datos[5], datos[6], datos [7], datos[8], id,))
+                    consulta_update = "update LV_Usuarios set nombre_usuario = :1, clave = :2, nombre = :3, apellido = :4, fecha_nacimiento = :5, telefono = :6, email = :7, tipo = :8 where id = :9"
+                    cursor.execute(consulta_update, (id, datos[0], datos[1], datos[2], datos[3], datos[4], datos[5], datos[6], datos [7], id,))
                     self.db.connection.commit()
                     print("[INFO]: Usuario editado correctamente")
                     
@@ -149,7 +149,7 @@ class UsuarioModel :
         
 class pacienteModel(UsuarioModel):
     def __init__(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: int, telefono: int, email: str, tipo: str, comuna: str, fecha_primera_visita: int, conexion: ConexionOracle):
-            super().__init__(nombre_usuario ,clave , nombre, apellido, fecha_nacimiento, telefono, email, tipo)
+            super().__init__(id, nombre_usuario ,clave , nombre, apellido, fecha_nacimiento, telefono, email, tipo, conexion)
             self.comuna = comuna
             self.fecha_primera_visita = fecha_primera_visita
 
@@ -190,8 +190,8 @@ class pacienteModel(UsuarioModel):
             
             if len(cursor.fetchall()) > 0:
                 if datos:
-                    consulta_update = "update LV_Pacientes set id = :1  nombre_usuario = :2, clave = :3, nombre = :4, apellido = :5, fecha_nacimiento = :6, telefono = :7, email = :8, tipo = :9, comuna = :10, fecha_primera_visita = :11"
-                    cursor.execute(consulta_update, (id, datos[0], datos[2], datos[3], datos[4], datos[5], datos[6], datos[7], datos[8], datos[9], datos[10], id,))
+                    consulta_update = "update LV_Pacientes set  nombre_usuario = :1, clave = :2, nombre = :3, apellido = :4, fecha_nacimiento = :5, telefono = :6, email = :7, tipo = :8, comuna = :9, fecha_primera_visita = :10 where id = :11"
+                    cursor.execute(consulta_update, (id, datos[0], datos[1], datos[2], datos[3], datos[4], datos[5], datos[6], datos[7], datos[8], datos[9], datos[10],  id,))
                     self.db.connection.commit()
                     print(f"[INFO]: {id} editado correctamente")
                     
@@ -263,14 +263,14 @@ class pacienteModel(UsuarioModel):
 
 class DoctorModel(UsuarioModel):
     def __init__(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento:int , telefono: int, email: str, tipo: str, especialidad: str, horario_atencion: str, fecha_ingreso: int, conexion: ConexionOracle):
-            super().__init__(nombre_usuario ,clave , nombre, apellido, fecha_nacimiento, telefono, email, tipo)
+            super().__init__(id, nombre_usuario ,clave , nombre, apellido, fecha_nacimiento, telefono, email, tipo, conexion)
             self.especialidad = especialidad
             self.horario_atencion = horario_atencion
             self.fecha_ingreso = fecha_ingreso
 
     def crear_Doctor(self, id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: int, telefono: int, email: str, tipo: str,especialidad: str, horario_atencion: str, fecha_ingreso: int ) -> bool:
         
-        cursor = self.conexion.obtener_cursor()
+        cursor = self.db.obtener_cursor()
 
         try:
             validacion = "select * from LV_Doctores where id = :1"
@@ -305,7 +305,7 @@ class DoctorModel(UsuarioModel):
             
             if len(cursor.fetchall()) > 0:
                 if datos:
-                    consulta_update = "update LV_Doctores set id = :1  nombre_usuario = :2, clave = :3, nombre = :4, apellido = :5, fecha_nacimiento = :6, telefono = :7, email = :8, tipo = :9, especialidad = :10, horario_atencion = :11, fecha_ingreso = :12"
+                    consulta_update = "update LV_Doctores set nombre_usuario = :1, clave = :2, nombre = :3, apellido = :4, fecha_nacimiento = :5, telefono = :6, email = :7, tipo = :8, especialidad = :9, horario_atencion = :10, fecha_ingreso = :11 where id = :12"
                     cursor.execute(consulta_update, (id, datos[0], datos[1], datos[2], datos[3], datos[4], datos[5], datos[6], datos[7], datos[8], datos[9], datos[10], datos[11], id,))
                     self.db.connection.commit()
                     print(f"[INFO]: {id} editado correctamente")
