@@ -2,17 +2,24 @@ from config.db_config import ConexionOracle
 from datetime import date
 
 class UsuarioModel :
-    def __init__(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo: str, conexion: ConexionOracle):
-        self.id = id
-        self.nombre_usuario = nombre_usuario
-        self.clave = clave
-        self.nombre = nombre
-        self.apellido = apellido
-        self.fecha_nacimiento = fecha_nacimiento
-        self.telefono = telefono
-        self.email = email
-        self.tipo = tipo
+    def __init__(self, conexion: ConexionOracle):
+        """Inicializa el modelo de acceso a datos solo con la conexión."""
         self.db = conexion
+
+    def buscar_usuario_login(self, nombre_usuario: str) -> tuple | None:
+        """
+        Busca al usuario por nombre para obtener su ID, hash de clave y tipo.
+        """
+        cursor = self.db.obtener_cursor()
+        try:
+            consulta = "SELECT id, nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo FROM LV_Usuarios WHERE nombre_usuario = :1"
+            cursor.execute(consulta, (nombre_usuario,))
+            return cursor.fetchone()
+        except Exception as e:
+            print(f"[DB ERROR]: Error al buscar usuario para login: {e}")
+            return None
+        finally:
+            cursor.close()
         
     def Crear_usuario(self, id, nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo) -> bool:
         """
@@ -149,10 +156,11 @@ class UsuarioModel :
                 cursor.close()
         
 class pacienteModel(UsuarioModel):
-    def __init__(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo: str, comuna: str, fecha_primera_visita: date, conexion: ConexionOracle):
-            super().__init__(id, nombre_usuario ,clave , nombre, apellido, fecha_nacimiento, telefono, email, tipo, conexion)
-            self.comuna = comuna
-            self.fecha_primera_visita = fecha_primera_visita
+    def __init__(self, conexion: ConexionOracle):
+        """Inicializa el modelo de acceso a datos de Paciente con la conexión."""
+    
+    # 1. Si hereda de UsuarioModel, llama al constructor del padre
+        super().__init__(conexion)
 
     def crear_paciente(self, id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo: str, comuna: str, fecha_primera_visita: date) -> bool:
         
@@ -263,11 +271,10 @@ class pacienteModel(UsuarioModel):
                 cursor.close()
 
 class DoctorModel(UsuarioModel):
-    def __init__(self,id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento:date , telefono: int, email: str, tipo: str, especialidad: str, horario_atencion: str, fecha_ingreso: int, conexion: ConexionOracle):
-            super().__init__(id, nombre_usuario ,clave , nombre, apellido, fecha_nacimiento, telefono, email, tipo, conexion)
-            self.especialidad = especialidad
-            self.horario_atencion = horario_atencion
-            self.fecha_ingreso = fecha_ingreso
+    def __init__(self, conexion: ConexionOracle):
+        """Inicializa el modelo de acceso a datos de Doctor."""
+    # Llama al constructor del padre (UsuarioModel), que ahora solo recibe la conexión.
+        super().__init__(conexion)
 
             
 

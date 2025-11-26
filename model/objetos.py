@@ -328,7 +328,7 @@ class ConsultasModel():
         cursor = self.db.obtener_cursor()
 
         try:
-            consulta = "select * from LV_consultas"
+            consulta = "select * from LV_Consultas"
             cursor.execute(consulta)
             datos = cursor.fetchall()
 

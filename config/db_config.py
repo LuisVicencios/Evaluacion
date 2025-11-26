@@ -93,11 +93,11 @@ def validar_tablas(db: ConexionOracle):
     LV_Pacientes = """
             BEGIN
                 EXECUTE IMMEDIATE '
-                    CREATE TABLE LV_Paciente  (
-                        id  integer PRIMARY KEY,
+                    CREATE TABLE LV_Pacientes (
+                        id integer PRIMARY KEY,
                         comuna VARCHAR2(100),
                         fecha_primera_visita date ,
-                        CONSTRAINT fk_paciente_usuario FOREIGN KEY (id) REFERENCES LV_Usuarios(id)
+                        CONSTRAINT fk_pacientes_usuario FOREIGN KEY (id) REFERENCES LV_Usuarios(id)
                         )
                     ';
             EXCEPTION
@@ -112,11 +112,11 @@ def validar_tablas(db: ConexionOracle):
             BEGIN
                 EXECUTE IMMEDIATE '
                     CREATE TABLE LV_Doctores (
-                        id  integer PRIMARY KEY,
+                        id integer PRIMARY KEY,
                         especialidad varchar2(100),
                         horario_atencion varchar2(100),
                         fecha_ingreso date,
-                        CONSTRAINT fk_doctor_usuario FOREIGN KEY (id) references LV_Usuarios(id)
+                        CONSTRAINT fk_doctores_usuario FOREIGN KEY (id) references LV_Usuarios(id)
                         )
                     ';
             EXCEPTION
@@ -132,12 +132,12 @@ def validar_tablas(db: ConexionOracle):
                 EXECUTE IMMEDIATE '
                     CREATE TABLE LV_Agenda (
                         id  integer PRIMARY KEY,
-                        id_doctor number ,
-                        id_paciente number ,
+                        id_doctor integer ,
+                        id_paciente integer ,
                         fecha_consulta varchar2(100),
                         estado varchar2(100),
-                        CONSTRAINT fk_agenda_doctor FOREIGN KEY (id) REFERENCES LV_Doctores (id),
-                        CONSTRAINT fk_agenda_paciente FOREIGN KEY (id) REFERENCES LV_Pacientes (id)
+                        CONSTRAINT fk_agenda_doctor FOREIGN KEY (id_doctor) REFERENCES LV_Doctores (id),
+                        CONSTRAINT fk_agenda_paciente FOREIGN KEY (id_paciente) REFERENCES LV_Pacientes (id)
                         )
                     ';
             EXCEPTION
@@ -158,8 +158,8 @@ def validar_tablas(db: ConexionOracle):
                         id_doctor integer,
                         id_paciente integer,
                         descripcion varchar2(200),
-                        constraint fk_consulta_doctor FOREIGN KEY (id) REFERENCES LV_Doctores (id),
-                        constraint fk_consulta_paciente FOREIGN KEY (id) REFERENCES LV_pacientes (id)
+                        constraint fk_consultas_doctor FOREIGN KEY (id_doctor) REFERENCES LV_Doctores (id),
+                        constraint fk_consulta_paciente FOREIGN KEY (id_paciente) REFERENCES LV_Pacientes (id)
                         )
                     ';
             EXCEPTION
@@ -175,8 +175,9 @@ def validar_tablas(db: ConexionOracle):
                 EXECUTE IMMEDIATE '
                     CREATE TABLE LV_Recetas (
                         id integer PRIMARY KEY,
+                        id_consulta integer,
                         descripcion varchar2(200),
-                        CONSTRAINT fk_receta_consulta FOREIGN KEY (id) references LV_Consultas (id)
+                        CONSTRAINT fk_recetas_consulta FOREIGN KEY (id_consulta) references LV_Consultas (id)
                         )
                     ';
             EXCEPTION
