@@ -2,9 +2,18 @@ from config.db_config import ConexionOracle
 from datetime import date
 
 class UsuarioModel :
-    def __init__(self, conexion: ConexionOracle):
-        """Inicializa el modelo de acceso a datos solo con la conexión."""
-        self.db = conexion
+    def __init__(self, id: int, nombre_usuario: str, clave:str, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo:str, db: ConexionOracle):
+        self.id = id
+        self.nombre_usuario = nombre_usuario
+        self.clave = clave
+        self.nombre = nombre
+        self.apellido = apellido
+        self.fecha_nacimiento = fecha_nacimiento
+        self.telefono = telefono
+        self.email = email
+        self.tipo = tipo
+
+
 
     def buscar_usuario_login(self, nombre_usuario: str) -> tuple | None:
         """
@@ -21,7 +30,7 @@ class UsuarioModel :
         finally:
             cursor.close()
         
-    def Crear_usuario(self, id, nombre_usuario, clave, nombre, apellido, fecha_nacimiento, telefono, email, tipo) -> bool:
+    def Crear_usuario(self, id: int, nombre_usuario: str, clave:str, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo:str) -> bool:
         """
             Guarda el item actual si es que este no existe en la BD.\n
             Si es que ya existe, lanzará un mensaje de existencia.\n
@@ -159,7 +168,6 @@ class pacienteModel(UsuarioModel):
     def __init__(self, conexion: ConexionOracle):
         """Inicializa el modelo de acceso a datos de Paciente con la conexión."""
     
-    # 1. Si hereda de UsuarioModel, llama al constructor del padre
         super().__init__(conexion)
 
     def crear_paciente(self, id: int, nombre_usuario: str, clave: int, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo: str, comuna: str, fecha_primera_visita: date) -> bool:

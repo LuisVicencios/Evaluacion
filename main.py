@@ -84,14 +84,16 @@ def mostrar_menu_por_rol(tipo_usuario: str):
     opcion = input("Seleccione una opción: ")
     print(f"\n[INFO] Opción '{opcion}' seleccionada. Volviendo al menu principal.")
 
-def registrar_usuario_completo(usuario_ctrl: UsuarioController, tipo: str, controlador):
+def registrar_usuario_completo(usuario_ctrl: UsuarioController, paciente_ctrl: PacienteController, doctor_ctrl: DoctorController):
+    """
+    Solicita todos los datos esenciales por teclado y redirige la llamada
+    al controlador específico (Usuario, Paciente o Doctor).
+    """
 
-    """Solicita todos los datos esenciales por teclado para un registro."""
-
-    print(f"\n--- REGISTRO DE USUARIOS {tipo.upper()} ---")
+    print(f"\n--- INICIO DE REGISTRO ---")
 
     try:
-
+        # --- Datos Genéricos (Comunes a todos) ---
         id_user = int(input("1. ID del Usuario: "))
         nombre_usuario = input("2. Nombre de Usuario: ")
         clave = getpass.getpass("3. Clave: ")
@@ -100,41 +102,39 @@ def registrar_usuario_completo(usuario_ctrl: UsuarioController, tipo: str, contr
         fecha_nacimiento = date.fromisoformat(input("6. Fecha Nac. (YYYY-MM-DD): "))
         telefono = int(input("7. Teléfono: "))
         email = input("8. Email: ")
-     
-        tipo =  tipo = input("9. Tipo: ")
-        tipo = tipo.upper()
-
+        
+        tipo = input("9. Tipo (Paciente/Doctor/Usuario): ").upper() 
+        
         if tipo == "PACIENTE":
-            comuna = input("9. Comuna: ")
-            fecha_primera_visita = date.fromisoformat(input("10. Fecha 1ra Visita (YYYY-MM-DD): "))
+        
+            comuna = input("10. Comuna: ")
+            fecha_primera_visita = date.fromisoformat(input("11. Fecha 1ra Visita (YYYY-MM-DD): "))
 
-            return controlador.registrar_paciente(
-                id_user, nombre_usuario, clave, nombre, apellido, fecha_nacimiento,
-                telefono, email, tipo, comuna, fecha_primera_visita
-            )
+            return paciente_ctrl.registrar_paciente(id_user, nombre_usuario, clave, nombre, apellido, fecha_nacimiento,telefono, email, tipo, comuna, fecha_primera_visita)
 
-        if tipo == "DOCTOR":
-            especialidad = input("9. Especialidad: ")
-            horario_atencion = input("10. Horario Atención: ")
-            fecha_ingreso = date.fromisoformat(input("11. Fecha Ingreso (YYYY-MM-DD): "))
+        elif tipo == "DOCTOR":
 
-            return controlador.registrar_doctor(
-                id_user, nombre_usuario, clave, nombre, apellido, fecha_nacimiento,
-                telefono, email, tipo, especialidad, horario_atencion, fecha_ingreso
-            )
+            especialidad = input("10. Especialidad: ")
+            horario_atencion = input("11. Horario Atención: ")
+            fecha_ingreso = date.fromisoformat(input("12. Fecha Ingreso (YYYY-MM-DD): "))
 
-        elif tipo == "USUARIO":
-             return controlador.registrar_usuario(
-                id_user, nombre_usuario, clave, nombre, apellido, fecha_nacimiento,
-                telefono, email, tipo
-            )
+
+            return doctor_ctrl.registrar_doctor(id_user, nombre_usuario, clave, nombre, apellido, fecha_nacimiento,telefono, email, tipo, especialidad, horario_atencion, fecha_ingreso)
+
+        elif tipo == "USUARIO" or tipo == "ADMIN":
+            
+             return usuario_ctrl.registrar_usuario(id_user, nombre_usuario, clave, nombre, apellido, fecha_nacimiento,telefono, email, tipo )
+        
+        else:
+            print("[ERROR]: Tipo de usuario ingresado no es válido.")
+            return False
 
     except ValueError:
         print("[ERROR]: Error en el formato de datos (número o fecha).")
         return False
     except Exception as e:
+        # Atrapa errores como ID duplicado o fallo en la BD
         print(f"[ERROR]: Falló el registro: {e}")
-
         return False
 
 def main():
@@ -182,6 +182,7 @@ def main():
     mostrar_menu_por_rol(usuario_logeado['tipo'])
 
     db.desconectar()
+
     print("Aplicación finalizada.")
 
 if __name__ == "__main__":

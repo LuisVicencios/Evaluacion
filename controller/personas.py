@@ -34,7 +34,7 @@ class UsuarioController:
             print(f"[ERROR DE SEGURIDAD]: Fallo la verificacion de la clave: {e}")
             return False
 
-    def registrar_usuario(self,id: int, nombre_usuario: str, clave: str, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo: str) -> bool:
+    def registrar_usuario(self, id: int, nombre_usuario: str, clave: str, nombre: str, apellido: str, fecha_nacimiento: date, telefono: int, email: str, tipo: str) -> bool:
         """
             Recibe atributos de UsuarioModel, realiza registro en BD.\n
             returns Boolean

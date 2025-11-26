@@ -134,7 +134,7 @@ def validar_tablas(db: ConexionOracle):
                         id  integer PRIMARY KEY,
                         id_doctor integer ,
                         id_paciente integer ,
-                        fecha_consulta varchar2(100),
+                        fecha_consulta date,
                         estado varchar2(100),
                         CONSTRAINT fk_agenda_doctor FOREIGN KEY (id_doctor) REFERENCES LV_Doctores (id),
                         CONSTRAINT fk_agenda_paciente FOREIGN KEY (id_paciente) REFERENCES LV_Pacientes (id)
